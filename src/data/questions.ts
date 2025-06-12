@@ -16,6 +16,7 @@ export interface Question {
   options: string[];
   correctAnswer: string;
   category?: string;
+  
 }
 
 export const questions: Question[] = [
@@ -44,7 +45,6 @@ export const questions: Question[] = [
 
 // Utility to get all questions
 export const fetchQuestions = async (): Promise<Question[]> => {
-  // Simulate async fetch. Replace with real API call if needed.
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(questions);
