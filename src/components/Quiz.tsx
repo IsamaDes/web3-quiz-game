@@ -30,7 +30,7 @@ const Quiz: React.FC = () => {
     const currentQuestion = questions[currentIndex];
     const isCorrect = option === currentQuestion.correctAnswer;
     setFeedback(isCorrect ? 'Correct!' : 'Incorrect');
-    if (isCorrect) incrementScore(); // Use the hook function
+    if (isCorrect) incrementScore(); 
         
     setTimeout(() => {
       setFeedback('');
@@ -48,7 +48,7 @@ const Quiz: React.FC = () => {
     setSelectedOption(null);
     setShowScore(false);
     setFeedback('');
-    resetScore(); // Use the hook function to reset score
+    resetScore(); 
   };
 
   if (questions.length === 0) return <div>Loading...</div>;
