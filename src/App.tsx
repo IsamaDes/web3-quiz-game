@@ -1,9 +1,18 @@
 // src/App.tsx
 import React from 'react';
-import Home from './pages/Home';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Quiz from './components/Quiz';
 
 const App: React.FC = () => {
-  return <Home />;
+  return (
+    <Router>
+      <div className="min-h-screen bg-gray-100 p-4">
+        <Routes>
+          <Route path="/" element={<Quiz />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 };
 
 export default App;
