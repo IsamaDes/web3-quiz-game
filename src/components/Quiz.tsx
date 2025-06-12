@@ -8,14 +8,18 @@
 import React, { useEffect, useState } from 'react';
 import { fetchQuestions } from '../data/questions';
 import type { Question } from '../data/questions';
+import { useScore } from '../hooks/useScore';
+import ScoreBoard from './ScoreBooard';
 
 const Quiz: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [feedback, setFeedback] = useState('');
+  
+  // Use the custom hook for score management
+  const { score, incrementScore, resetScore } = useScore();
 
   useEffect(() => {
     fetchQuestions().then(setQuestions);
@@ -26,8 +30,8 @@ const Quiz: React.FC = () => {
     const currentQuestion = questions[currentIndex];
     const isCorrect = option === currentQuestion.correctAnswer;
     setFeedback(isCorrect ? 'Correct!' : 'Incorrect');
-    if (isCorrect) setScore(prev => prev + 1);
-    
+    if (isCorrect) incrementScore(); // Use the hook function
+        
     setTimeout(() => {
       setFeedback('');
       setSelectedOption(null);
@@ -39,14 +43,43 @@ const Quiz: React.FC = () => {
     }, 1000);
   };
 
+  const handleRestart = () => {
+    setCurrentIndex(0);
+    setSelectedOption(null);
+    setShowScore(false);
+    setFeedback('');
+    resetScore(); // Use the hook function to reset score
+  };
+
   if (questions.length === 0) return <div>Loading...</div>;
 
-  if (showScore) return <div className="p-4 text-xl">Your score: {score}/{questions.length}</div>;
+  if (showScore) {
+    return (
+      <div className="p-4 max-w-xl mx-auto text-center">
+        <h2 className="text-3xl font-bold mb-4">Quiz Complete!</h2>
+        <ScoreBoard score={score} total={questions.length} />
+        <button 
+          onClick={handleRestart}
+          className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Restart Quiz
+        </button>
+      </div>
+    );
+  }
 
   const current = questions[currentIndex];
 
   return (
     <div className="p-4 max-w-xl mx-auto">
+      {/* Show current score */}
+      <div className="mb-4">
+        <ScoreBoard score={score} total={questions.length} />
+        <p className="text-sm text-gray-600 mt-1">
+          Question {currentIndex + 1} of {questions.length}
+        </p>
+      </div>
+      
       <h2 className="text-2xl font-semibold mb-4">{current.question}</h2>
       <div className="grid gap-2">
         {current.options.map((option, index) => (
@@ -59,8 +92,8 @@ const Quiz: React.FC = () => {
                 ? option === current.correctAnswer
                   ? 'bg-green-300'
                   : 'bg-red-300'
-                : 'bg-white'
-            }`}
+                : 'bg-white hover:bg-gray-50'
+            } ${!!selectedOption ? 'cursor-not-allowed' : 'cursor-pointer'}`}
           >
             {option}
           </button>
@@ -73,4 +106,12 @@ const Quiz: React.FC = () => {
 
 export default Quiz;
 
-        
+
+
+
+
+
+
+
+
+
